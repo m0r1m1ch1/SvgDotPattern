@@ -63,7 +63,7 @@ import Layout from '../layouts/Layout.astro';
           const rectHeight = dotRect.getAttribute('height');
           const fill = dotRect.getAttribute('fill') || 'black';
 
-          const svgCode = `<svg class="dot-pattern" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          const svgCode = `<svg class="dot-pattern" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <pattern id="dotPattern" width="${patternWidth}" height="${patternHeight}" patternUnits="userSpaceOnUse">
         <rect id="dotRect" x="${rectX}" y="${rectY}" width="${rectWidth}" height="${rectHeight}" fill="${fill}"></rect>
