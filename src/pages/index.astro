@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="SVG Dot Pattern Generator">
-  <svg class="dot-pattern" xmlns="http://www.w3.org/2000/svg">
+  <svg class="dot-pattern" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
     <defs>
       <pattern id="dotPattern" width="10" height="10" patternUnits="userSpaceOnUse">
         <rect id="dotRect" x="3" y="3" width="4" height="4" fill="black"></rect>
@@ -11,6 +11,10 @@ import Layout from '../layouts/Layout.astro';
     </defs>
     <rect width="100%" height="100%" fill="url(#dotPattern)"></rect>
   </svg>
+
+  <pattern id="dotPattern" width="10" height="10" patternUnits="userSpaceOnUse">
+    <rect x="3" y="3" width="4" height="4" fill="black"></rect>
+  </pattern>
 </Layout>
 
 <style lang="scss">
@@ -59,9 +63,14 @@ import Layout from '../layouts/Layout.astro';
           const rectHeight = dotRect.getAttribute('height');
           const fill = dotRect.getAttribute('fill') || 'black';
 
-          const svgCode = `<pattern id="dotPattern" width="${patternWidth}" height="${patternHeight}" patternUnits="userSpaceOnUse">
-  <rect x="${rectX}" y="${rectY}" width="${rectWidth}" height="${rectHeight}" fill="${fill}"></rect>
-</pattern>`;
+          const svgCode = `<svg class="dot-pattern" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <defs>
+      <pattern id="dotPattern" width="${patternWidth}" height="${patternHeight}" patternUnits="userSpaceOnUse">
+        <rect id="dotRect" x="${rectX}" y="${rectY}" width="${rectWidth}" height="${rectHeight}" fill="${fill}"></rect>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#dotPattern)"></rect>
+  </svg>`;
 
           navigator.clipboard
             .writeText(svgCode)
