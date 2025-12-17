@@ -14,6 +14,7 @@
     "astro": "^5.15.3",
     "astro-icon": "^1.1.5",
     "focus-visible": "^5.2.1",
+    "lil-gui": "^0.21.0",
     "sass": "^1.93.3"
   },
   "devDependencies": {

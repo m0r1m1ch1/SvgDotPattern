@@ -2,12 +2,31 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout>
-  <div class="home"></div>
+<Layout title="SVG Dot Pattern Generator">
+  <svg class="dot-pattern" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="dotPattern" width="10" height="10" patternUnits="userSpaceOnUse">
+        <rect id="dotRect" x="3" y="3" width="4" height="4" fill="black"></rect>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#dotPattern)"></rect>
+  </svg>
 </Layout>
 
+<style lang="scss">
+  @use '@/styles/extension' as *;
+
+  .dot-pattern {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
 <script>
-  import { visitState } from '@/utils/visitState';
+  import GUI from 'lil-gui';
 
   class Home {
     constructor() {
@@ -15,8 +34,85 @@ import Layout from '../layouts/Layout.astro';
     }
 
     init() {
-      const value = visitState.isNewSession();
-      console.log('home', value);
+      // SVG要素の参照を取得
+      const pattern = document.getElementById('dotPattern');
+      const dotRect = document.getElementById('dotRect');
+
+      if (!pattern || !dotRect) return;
+
+      // パラメータの初期値
+      const params = {
+        // パターンの間隔（gap）
+        patternGap: 10,
+        // ドットのオフセット
+        dotOffsetX: 3,
+        dotOffsetY: 3,
+        // ドットのサイズ
+        dotSize: 4,
+        // SVGコードをコピー
+        copyPattern: () => {
+          const patternWidth = pattern.getAttribute('width');
+          const patternHeight = pattern.getAttribute('height');
+          const rectX = dotRect.getAttribute('x');
+          const rectY = dotRect.getAttribute('y');
+          const rectWidth = dotRect.getAttribute('width');
+          const rectHeight = dotRect.getAttribute('height');
+          const fill = dotRect.getAttribute('fill') || 'black';
+
+          const svgCode = `<pattern id="dotPattern" width="${patternWidth}" height="${patternHeight}" patternUnits="userSpaceOnUse">
+  <rect x="${rectX}" y="${rectY}" width="${rectWidth}" height="${rectHeight}" fill="${fill}"></rect>
+</pattern>`;
+
+          navigator.clipboard
+            .writeText(svgCode)
+            .then(() => {
+              console.log('SVGコードをクリップボードにコピーしました');
+            })
+            .catch((err) => {
+              console.error('コピーに失敗しました:', err);
+            });
+        },
+      };
+
+      // lil-guiのインスタンスを作成
+      const gui = new GUI();
+
+      // パターンの間隔を制御
+      gui
+        .add(params, 'patternGap', 5, 50, 1)
+        .name('gap')
+        .onChange((value: number) => {
+          pattern.setAttribute('width', String(value));
+          pattern.setAttribute('height', String(value));
+        });
+
+      // ドットのオフセットXを制御
+      gui
+        .add(params, 'dotOffsetX', 0, 20, 0.5)
+        .name('offsetX')
+        .onChange((value: number) => {
+          dotRect.setAttribute('x', String(value));
+        });
+
+      // ドットのオフセットYを制御
+      gui
+        .add(params, 'dotOffsetY', 0, 20, 0.5)
+        .name('offsetY')
+        .onChange((value: number) => {
+          dotRect.setAttribute('y', String(value));
+        });
+
+      // ドットのサイズを制御
+      gui
+        .add(params, 'dotSize', 1, 20, 0.5)
+        .name('size')
+        .onChange((value: number) => {
+          dotRect.setAttribute('width', String(value));
+          dotRect.setAttribute('height', String(value));
+        });
+
+      // SVGコードをコピーするボタン
+      gui.add(params, 'copyPattern').name('Copy SVG');
     }
   }
   new Home();
